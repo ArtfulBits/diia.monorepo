@@ -36,8 +36,6 @@ jobs:
     strategy:
       matrix:
         packages: [be-configs]
-    env:
-      NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,6 +45,8 @@ jobs:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
       - name: Install dependencies and publish the package
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           cd ${{ matrix.packages }}
           npm install
