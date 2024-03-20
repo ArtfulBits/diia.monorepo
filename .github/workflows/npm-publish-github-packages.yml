@@ -20,9 +20,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: cd ${{ matrix.packages }}
-      - run: npm install # use npm ci only if available lock files
-      - run: npm test
+      - name: Install dependencies and run tests
+        run: |
+          cd ${{ matrix.packages }}
+          ls -la .
+          npm install
+          npm test
 
   publish-gpr:
     needs: build
@@ -33,6 +36,8 @@ jobs:
     strategy:
       matrix:
         packages: [be-configs]
+    env:
+      NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,8 +46,8 @@ jobs:
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
-      - run: cd ${{ matrix.packages }}
-      - run: npm install # use npm ci only if available lock files
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Install dependencies and publish the package
+        run: |
+          cd ${{ matrix.packages }}
+          npm install
+          npm publish
