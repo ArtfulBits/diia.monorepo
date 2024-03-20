@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        packages: [be-configs]
+        packages: [be-configs, be-eslint-plugin]
     steps:
       - uses: actions/checkout@v4
         with:
