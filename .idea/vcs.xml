@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/be-configs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-eslint-plugin" vcs="Git" />
   </component>
 </project>
