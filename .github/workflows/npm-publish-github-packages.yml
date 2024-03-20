@@ -14,8 +14,10 @@ jobs:
       matrix:
         packages: [be-configs]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
       - run: cd ${{ matrix.packages }}
@@ -32,8 +34,10 @@ jobs:
       matrix:
         packages: [be-configs]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
