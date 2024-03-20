@@ -12,6 +12,15 @@ cd be-configs
 volta pin node@18
 ```
 
+## Initialization
+
+```bash
+git submodule init
+git submodule update --init
+
+# ref: https://stackoverflow.com/questions/3796927/how-do-i-git-clone-a-repo-including-its-submodules
+```
+
 ## Approach
 
 ```bash
