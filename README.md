@@ -132,3 +132,8 @@ npm notice
 npm notice Publishing to https://registry.dev:4873 with tag latest and default access
 + @diia-inhouse/configs@1.27.2
 ```
+
+## CI/CD configuration
+
+1. GitHub Actions will be used for initial CI/CD
+2. packages will be published to the github npm registry
