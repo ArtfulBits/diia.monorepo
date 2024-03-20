@@ -10,3 +10,6 @@
 [submodule "be-genproto"]
 	path = be-genproto
 	url = https://github.com/diia-open-source/be-genproto.git
+[submodule "be-types"]
+	path = be-types
+	url = https://github.com/diia-open-source/be-types.git
