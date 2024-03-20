@@ -27,9 +27,14 @@ https:
 auth:
   htpasswd:
     file: ./htpasswd
+    algorithm: bcrypt
     # Maximum amount of users allowed to register, defaults to "+inf".
     # You can set this to -1 to disable registration.
     #max_users: 1000
+
+web:
+  enable: true
+  login: false
 
 # a list of other known repositories we can talk to
 uplinks:
@@ -60,7 +65,6 @@ packages:
     # if package is not available locally, proxy requests to 'npmjs' registry
     proxy: npmjs
 
-# log settings
-logs:
-  - {type: stdout, format: pretty, level: http}
-  #- {type: file, path: verdaccio.log, level: info}
+# log settings, levels: fatal, error, warn, http, info, debug, trace
+log: { type: stdout, format: pretty, level: http }
+#log: {type: file, path: verdaccio.log, level: info}
