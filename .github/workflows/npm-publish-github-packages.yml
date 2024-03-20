@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 18
       - run: cd ${{ matrix.packages }}
-      - run: npm ci
+      - run: npm install # use npm ci only if available lock files
       - run: npm test
 
   publish-gpr:
@@ -38,7 +38,7 @@ jobs:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
       - run: cd ${{ matrix.packages }}
-      - run: npm ci
+      - run: npm install # use npm ci only if available lock files
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
