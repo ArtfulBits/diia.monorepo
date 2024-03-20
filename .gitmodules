@@ -1,3 +1,6 @@
 [submodule "be-configs"]
 	path = be-configs
 	url = https://github.com/diia-open-source/be-configs.git
+[submodule "be-eslint-plugin"]
+	path = be-eslint-plugin
+	url = https://github.com/diia-open-source/be-eslint-plugin.git
