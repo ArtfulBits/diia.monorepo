@@ -1,4 +1,5 @@
 # diia.monorepo
+
 Monorepo that configures https://github.com/diia-open-source repos as one big working space
 
 ## Tools
@@ -59,15 +60,75 @@ git submodule foreach --recursive git clean -ffd
 ## Local Development
 
 ```bash
-# custom certificates for HTTPS
-mkcert "*.dev" "*.local" "*.localhost" localhost 127.0.0.1 ::1
+# install required tools
+brew install mkcert
+brew install nss # required for Firefox
+brew install gnu-sed # gsed
+
+# install Root CA certificate in OS
+mkcert -install
+
+# custom certificates for HTTPS (avoid wildcard certificates, they are not well treated by chrome)
+mkcert "registry.dev" "registry.local" "registry.localhost" localhost 127.0.0.1 0.0.0.0 ::1
+mv registry*.pem ./.verdaccio/config/
 
 # register registry.local domain
-sudo gsed -i '1i 127.0.0.1  regisrty.local' /etc/hosts
+sudo gsed -i '1i 127.0.0.1  registry.local' /etc/hosts # .local usually used for broadcasting
+sudo gsed -i '1i 127.0.0.1  registry.dev' /etc/hosts
+sudo gsed -i '1i 127.0.0.1  registry.localhost' /etc/hosts
+
+# force DNS cache to refresh
+sudo killall -HUP mDNSResponder
 
 # run all local hosted services required for running the solution
-docker-compose up
+docker-compose up -d
 
 # verify the local NPM
-open 
+open https://registry.dev:4873
+
+# update NPM configuration
+npm set registry https://registry.dev:4873
+# OR:
+NPM_CONFIG_REGISTRY=https://registry.dev:4873
+
+# also should be registered a CA certificate for npm
+export NODE_EXTRA_CA_CERTS="$(mkcert -CAROOT)/rootCA.pem"
+
+# register user (recommended: admin/admin with email developer.diia@local.dev)
+npm adduser --registry https://registry.dev:4873/
+
+# verify that new user created
+cat .verdaccio/config/htpasswd
+
+# configure NPM to use local registry 
+npm set registry https://registry.dev:4873/
+npm profile set password --registry https://registry.dev:4873/
+
+# verify login (admin/admin)
+npm login --registry=https://registry.dev:4873
+```
+
+```bash
+cd be-configs
+npm install
+
+# publish package into local registry
+npm publish
+```
+
+expected output: 
+
+```text
+npm notice === Tarball Details === 
+npm notice name:          @diia-inhouse/configs                   
+npm notice version:       1.27.2                                  
+npm notice filename:      diia-inhouse-configs-1.27.2.tgz         
+npm notice package size:  12.3 kB                                 
+npm notice unpacked size: 40.7 kB                                 
+npm notice shasum:        0ba18735bfcd22bc6806a925196ecd3a1b0a968f
+npm notice integrity:     sha512-V9x/nGrpbpx9L[...]EGlmrNeMMQs2g==
+npm notice total files:   30                                      
+npm notice 
+npm notice Publishing to https://registry.dev:4873 with tag latest and default access
++ @diia-inhouse/configs@1.27.2
 ```

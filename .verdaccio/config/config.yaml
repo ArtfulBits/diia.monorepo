@@ -3,7 +3,6 @@
 # - https://raw.githubusercontent.com/andru255/verdaccio-server/master/conf/config.yaml
 # - https://community.hetzner.com/tutorials/verdaccio-secure-fedora-server
 
-
 #
 # This is the default config file. It allows all users to do anything,
 # so don't use it on production systems.
@@ -14,6 +13,16 @@
 
 # path to a directory with all packages
 storage: /verdaccio/storage
+
+listen: 
+  - https://registry.dev:4873
+  - https://0.0.0.0:4873
+
+# ref: https://verdaccio.org/docs/ssl
+https:
+    key:  /verdaccio/conf/registry.dev+6-key.pem
+    cert: /verdaccio/conf/registry.dev+6.pem
+#    ca:   /verdaccio/conf/rootCA.pem
 
 auth:
   htpasswd:
@@ -26,7 +35,9 @@ auth:
 uplinks:
   npmjs:
     url: https://registry.npmjs.org/
-
+  yarn:
+    url: https://registry.yarnpkg.com
+    
 packages:
   '@*/*':
     # scoped packages
