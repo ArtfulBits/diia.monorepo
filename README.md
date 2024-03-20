@@ -106,6 +106,9 @@ npm profile set password --registry https://registry.dev:4873/
 
 # verify login (admin/admin)
 npm login --registry=https://registry.dev:4873
+
+# compose archive for publishing (expected something like: diia-inhouse-genproto-1.10.1.tgz)
+npm pack
 ```
 
 ```bash

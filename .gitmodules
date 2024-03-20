@@ -7,3 +7,6 @@
 [submodule "be-eslint-config"]
 	path = be-eslint-config
 	url = https://github.com/diia-open-source/be-eslint-config.git
+[submodule "be-genproto"]
+	path = be-genproto
+	url = https://github.com/diia-open-source/be-genproto.git

@@ -42,6 +42,9 @@ uplinks:
     url: https://registry.npmjs.org/
   yarn:
     url: https://registry.yarnpkg.com
+
+# ref: https://github.com/verdaccio/verdaccio/blob/5.x/conf/default.yaml#L147
+max_body_size: 100mb
     
 packages:
   '@*/*':
