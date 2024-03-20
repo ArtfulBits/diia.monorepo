@@ -54,5 +54,20 @@ git submodule foreach --recursive git reset --hard origin/main
 
 ## remove any untracked files:
 git submodule foreach --recursive git clean -ffd
+```
 
+## Local Development
+
+```bash
+# custom certificates for HTTPS
+mkcert "*.dev" "*.local" "*.localhost" localhost 127.0.0.1 ::1
+
+# register registry.local domain
+sudo gsed -i '1i 127.0.0.1  regisrty.local' /etc/hosts
+
+# run all local hosted services required for running the solution
+docker-compose up
+
+# verify the local NPM
+open 
 ```

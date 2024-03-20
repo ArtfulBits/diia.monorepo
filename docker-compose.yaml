@@ -1,6 +1,7 @@
 version: '3.1'
 
 services:
+  # ref: https://raw.githubusercontent.com/verdaccio/verdaccio/master/docker-examples/v6/docker-local-storage-volume/conf/config.yaml
   verdaccio:
     image: verdaccio/verdaccio
     container_name: 'verdaccio'
@@ -11,9 +12,9 @@ services:
     ports:
       - '4873:4873'
     volumes:
-      - './storage:/verdaccio/storage'
-      - './config:/verdaccio/conf'
-      - './plugins:/verdaccio/plugins'
+      - './.verdaccio/storage:/verdaccio/storage'
+      - './.verdaccio/config:/verdaccio/conf'
+      - './.verdaccio/plugins:/verdaccio/plugins'
 
 networks:
   node-network:

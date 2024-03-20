@@ -1,0 +1,5 @@
+# local npm server storage
+.verdaccio/storage/*
+
+# gitkeep file overrides other rules, and force to keep folder structure in git
+!**/.gitkeep
