@@ -1,7 +1,7 @@
 {
   "name": "diia-inhouse",
   "scripts": {
-    "build": "npm run build --ws"
+    "build": "npm run build --ws --if-present"
   },
   "workspaces": [
     "be-configs",
