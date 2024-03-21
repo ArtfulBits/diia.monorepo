@@ -1,0 +1,18 @@
+{
+  "name": "diia-monorepo",
+  "scripts": {
+    "build:graph": "npx ts-node ./bin/build.graph.ts"
+  },
+  "volta": {
+    "node": "18.19.1"
+  },
+  "devDependencies": {
+    "@types/graphlib": "^2.1.12",
+    "@types/yaml": "^1.9.7",
+    "fast-glob": "^3.3.2",
+    "graphlib": "^2.1.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3",
+    "yaml": "^2.4.1"
+  }
+}

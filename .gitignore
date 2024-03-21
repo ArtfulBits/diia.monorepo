@@ -6,3 +6,10 @@
 
 # dependencies version lock file
 package-lock.json
+
+# dependencies
+node_modules/
+
+# IDE folder
+.vscode/
+.idea/
