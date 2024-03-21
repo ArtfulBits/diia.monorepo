@@ -22,7 +22,6 @@ type Args = { dir?: string }
 
 const main = async ({ dir }: Args = {}) => {
     const cwd = dir ?? process.cwd()
-    console.log('cwd', cwd, dir)
     const files = await fg('**/package.json', { cwd })
 
     // extract dependencies from package.json files

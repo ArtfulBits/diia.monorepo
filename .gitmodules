@@ -13,3 +13,6 @@
 [submodule "be-types"]
 	path = be-types
 	url = https://github.com/diia-open-source/be-types.git
+[submodule "be-scaffold"]
+	path = be-scaffold
+	url = https://github.com/diia-open-source/be-scaffold.git
