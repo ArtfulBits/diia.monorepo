@@ -18,14 +18,19 @@ function readPackageJson(filePath: string): PackageJson {
 const NAMESPACE = '@diia-inhouse'
 const NODE_MODULES = 'node_modules'
 
-const main = async () => {
-    const files = await fg('**/package.json')
+type Args = { dir?: string }
+
+const main = async ({ dir }: Args = {}) => {
+    const cwd = dir ?? process.cwd()
+    console.log('cwd', cwd, dir)
+    const files = await fg('**/package.json', { cwd })
 
     // extract dependencies from package.json files
     const all = files
         .filter((path: string) => !path.includes(NODE_MODULES))
         .map((filePath: string) => {
-            const packageJson = readPackageJson(filePath);
+            const resolvedPath = path.resolve(cwd, filePath)
+            const packageJson = readPackageJson(resolvedPath);
             const dependencies = Object.keys(packageJson.dependencies || {});
             const devDependencies = Object.keys(packageJson.devDependencies || {});
             const unique = Array.from(new Set([...dependencies, ...devDependencies]));
@@ -50,7 +55,7 @@ const main = async () => {
     })
 
     const executionOrder = alg.topsort(graph).reverse()
-    const dirsOrder = executionOrder.map((name: string) => graph.node(name))
+    const dirsOrder = executionOrder.map((name: string) => graph.node(name)).filter(Boolean)
 
     const strategyMatrix = {
         strategy: {
@@ -63,6 +68,6 @@ const main = async () => {
     console.log(stringify(strategyMatrix))
 }
 
-main().catch((err) => {
+main({ dir: process.argv?.[2] }).catch((err) => {
     console.error(err)
 })
