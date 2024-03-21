@@ -1,0 +1,12 @@
+{
+  "name": "diia-inhouse",
+  "scripts": {
+    "build": "npm run build --ws"
+  },
+  "workspaces": [
+    "be-configs",
+    "be-eslint-plugin",
+    "be-eslint-config",
+    "be-genproto"
+  ]
+}

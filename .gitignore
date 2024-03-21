@@ -4,5 +4,5 @@
 # gitkeep file overrides other rules, and force to keep folder structure in git
 !**/.gitkeep
 
-# dependencies version lock file
-package-lock.json
+# root node_modules
+/node_modules
