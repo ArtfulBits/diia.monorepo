@@ -5,14 +5,38 @@ name: Node.js Package
 
 on:
   release:
-    types: [created]
+    types: [ created ]
+
+strategy: &buildMatrix
+  matrix:
+    packages:
+      - be-configs
+      - be-eslint-plugin
+      - be-eslint-config
+      - be-genproto
+      - be-types
+      - be-scaffold
+      - be-pkg-test
+      - be-pkg-env
+      - be-pkg-i18n
+      - be-pkg-errors
+      - be-pkg-validators
+      - be-pkg-utils
+      - be-pkg-healthcheck
+      - be-pkg-http
+      - be-pkg-crypto
+      - be-pkg-redis
+      - be-pkg-db
+      - be-pkg-cms
+      - be-pkg-analytics
+      - be-diia-queue
+      - be-pkg-providers
+      - be-diia-app
 
 jobs:
   build:
     runs-on: macos-latest
-    strategy:
-      matrix:
-        packages: [be-configs, be-eslint-plugin]
+    <<: *buildMatrix
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,10 +44,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
+          registry-url: https://npm.pkg.github.com/
+          cache: 'npm'
       - name: Install dependencies and run tests
         run: |
+          [ ! -d ${{ matrix.packages }} ] && echo "Directory ${{ matrix.packages }} does not exist" && exit 0 
           cd ${{ matrix.packages }}
-          ls -la .
           npm install
           npm test
 
@@ -35,7 +61,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        packages: [be-configs]
+        packages: [ be-configs ]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,6 +70,7 @@ jobs:
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
+          cache: 'npm'
       - name: Install dependencies and publish the package
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
