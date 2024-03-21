@@ -140,3 +140,32 @@ npm notice Publishing to https://registry.dev:4873 with tag latest and default a
 
 1. GitHub Actions will be used for initial CI/CD
 2. packages will be published to the github npm registry
+
+## How to Resolve the Npm Build Issues
+
+```bash
+# fix node version
+nvm use 18
+volta pin node@18
+
+# point npm registry to our local registry
+npm set registry https://registry.dev:4873/
+
+# install the dependencies
+npm install
+
+# at this point it may fail with several reasons:
+# 1. missing inhouse packages (verify current versions with the one that declared in package.json)
+# 2. missing global dependencies (add them to devDependencies)
+#   - "typescript": "5.2.2"
+#   - "type-fest": "4.8.1"
+
+# publish changes
+cd be-scaffold
+git checkout -b my_new_branch_name_that_i_will_publish
+git commit --all -m "message" # commit all changes
+git remote add forked {forked_repo_url}
+git push --set-upstream forked my_new_branch_name_that_i_will_publish
+
+# click on published in terminal URL and create a PR with fixes
+```
