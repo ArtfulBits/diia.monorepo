@@ -97,3 +97,8 @@
 [submodule "diia-setup-howto"]
 	path = diia-setup-howto
 	url = https://github.com/diia-open-source/diia-setup-howto.git
+	ignore = untracked
+[submodule "be-user-service"]
+	path = be-user-service
+	url = https://github.com/diia-open-source/be-user-service.git
+	ignore = untracked

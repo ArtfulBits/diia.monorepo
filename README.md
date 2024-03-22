@@ -172,3 +172,11 @@ git push --set-upstream forked my_new_branch_name_that_i_will_publish
 # check versions of the packages
 fd package.json | xargs -I _ jq -c '. | { name:.name, version:.version}' _
 ```
+
+## Prepare to Test Run
+
+```bash
+# register archives in local registry
+cd diia-setup-howto/backend/clients
+find . -type f -name "*.tgz" -exec npm publish {} \;
+```
