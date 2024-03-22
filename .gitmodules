@@ -19,3 +19,6 @@
 [submodule "be-pkg-test"]
 	path = be-pkg-test
 	url = https://github.com/diia-open-source/be-pkg-test.git
+[submodule "be-pkg-i18n"]
+	path = be-pkg-i18n
+	url = https://github.com/diia-open-source/be-pkg-i18n.git
