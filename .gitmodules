@@ -58,3 +58,15 @@
 [submodule "be-pkg-analytics"]
 	path = be-pkg-analytics
 	url = https://github.com/diia-open-source/be-pkg-analytics.git
+[submodule "be-diia-metrics"]
+	path = be-diia-metrics
+	url = https://github.com/diia-open-source/be-diia-metrics.git
+[submodule "be-diia-queue"]
+	path = be-diia-queue
+	url = https://github.com/diia-open-source/be-diia-queue.git
+[submodule "be-pkg-providers"]
+	path = be-pkg-providers
+	url = https://github.com/diia-open-source/be-pkg-providers.git
+[submodule "be-diia-app"]
+	path = be-diia-app
+	url = https://github.com/diia-open-source/be-diia-app.git
