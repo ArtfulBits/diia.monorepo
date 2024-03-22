@@ -49,3 +49,12 @@
 [submodule "be-pkg-redis"]
 	path = be-pkg-redis
 	url = https://github.com/diia-open-source/be-pkg-redis.git
+[submodule "be-pkg-db"]
+	path = be-pkg-db
+	url = https://github.com/diia-open-source/be-pkg-db.git
+[submodule "be-pkg-cms"]
+	path = be-pkg-cms
+	url = https://github.com/diia-open-source/be-pkg-cms.git
+[submodule "be-pkg-analytics"]
+	path = be-pkg-analytics
+	url = https://github.com/diia-open-source/be-pkg-analytics.git
