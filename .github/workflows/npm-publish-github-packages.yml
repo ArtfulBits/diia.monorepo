@@ -34,6 +34,7 @@ strategy: &buildMatrix
       - be-diia-queue
       - be-pkg-providers
       - be-diia-app
+
 jobs:
   build:
     runs-on: macos-latest
