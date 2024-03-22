@@ -28,3 +28,6 @@
 [submodule "be-pkg-validators"]
 	path = be-pkg-validators
 	url = https://github.com/diia-open-source/be-pkg-validators.git
+[submodule "be-pkg-utils"]
+	path = be-pkg-utils
+	url = https://github.com/diia-open-source/be-pkg-utils.git
