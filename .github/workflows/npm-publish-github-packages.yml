@@ -7,6 +7,7 @@ on:
   release:
     types: [ created ]
 
+# noinspection YAMLSchemaValidation
 strategy: &buildMatrix
   matrix:
     packages:
@@ -34,6 +35,12 @@ strategy: &buildMatrix
       - be-diia-queue
       - be-pkg-providers
       - be-diia-app
+      - be-gateway-service
+      - be-documents-service
+      - be-public-service-catalog
+      - be-user-service
+      - be-auth-service
+      - be-criminal-cert-service
 
 jobs:
   build:

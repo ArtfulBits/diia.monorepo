@@ -94,3 +94,6 @@
 	path = be-diia-app
 	url = https://github.com/diia-open-source/be-diia-app.git
 	ignore = untracked
+[submodule "diia-setup-howto"]
+	path = diia-setup-howto
+	url = https://github.com/diia-open-source/diia-setup-howto.git

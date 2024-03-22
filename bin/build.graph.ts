@@ -41,7 +41,6 @@ const main = async ({ dir }: Args = {}) => {
                 dependencies: unique.filter((d) => d.includes(NAMESPACE))
             }
         })
-        .filter(({name}) => name.includes(NAMESPACE))
 
     // build graph and edges
     const graph = new Graph();
