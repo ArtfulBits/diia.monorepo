@@ -40,3 +40,12 @@
 [submodule "be-diia-logger"]
 	path = be-diia-logger
 	url = https://github.com/diia-open-source/be-diia-logger.git
+[submodule "be-pkg-env"]
+	path = be-pkg-env
+	url = https://github.com/diia-open-source/be-pkg-env.git
+[submodule "be-pkg-crypto"]
+	path = be-pkg-crypto
+	url = https://github.com/diia-open-source/be-pkg-crypto.git
+[submodule "be-pkg-redis"]
+	path = be-pkg-redis
+	url = https://github.com/diia-open-source/be-pkg-redis.git
