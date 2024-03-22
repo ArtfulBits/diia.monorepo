@@ -2,7 +2,8 @@
   "name": "diia-monorepo",
   "version": "0.0.1-alpha.1",
   "scripts": {
-    "build:graph": "npx ts-node ./bin/build.graph.ts"
+    "build:graph": "npx ts-node ./bin/build.graph.ts",
+    "dump:versions": "fd package.json --max-depth 2 | xargs -I _ jq -c '. | {name:.name, version:.version}' _"
   },
   "volta": {
     "node": "18.19.1"

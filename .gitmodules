@@ -31,3 +31,12 @@
 [submodule "be-pkg-utils"]
 	path = be-pkg-utils
 	url = https://github.com/diia-open-source/be-pkg-utils.git
+[submodule "be-pkg-http"]
+	path = be-pkg-http
+	url = https://github.com/diia-open-source/be-pkg-http.git
+[submodule "be-pkg-healthcheck"]
+	path = be-pkg-healthcheck
+	url = https://github.com/diia-open-source/be-pkg-healthcheck.git
+[submodule "be-diia-logger"]
+	path = be-diia-logger
+	url = https://github.com/diia-open-source/be-diia-logger.git

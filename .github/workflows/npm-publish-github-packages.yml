@@ -17,22 +17,23 @@ strategy: &buildMatrix
       - be-types
       - be-scaffold
       - be-pkg-test
-      - be-pkg-env
       - be-pkg-i18n
       - be-pkg-errors
       - be-pkg-validators
       - be-pkg-utils
       - be-pkg-healthcheck
+      - be-diia-logger
       - be-pkg-http
+      - be-pkg-env
       - be-pkg-crypto
       - be-pkg-redis
       - be-pkg-db
       - be-pkg-cms
       - be-pkg-analytics
+      - be-diia-metrics
       - be-diia-queue
       - be-pkg-providers
       - be-diia-app
-
 jobs:
   build:
     runs-on: macos-latest
