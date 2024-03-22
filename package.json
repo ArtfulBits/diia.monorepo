@@ -1,5 +1,6 @@
 {
   "name": "diia-monorepo",
+  "version": "0.0.1-alpha.1",
   "scripts": {
     "build:graph": "npx ts-node ./bin/build.graph.ts"
   },

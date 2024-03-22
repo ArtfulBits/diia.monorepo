@@ -22,3 +22,6 @@
 [submodule "be-pkg-i18n"]
 	path = be-pkg-i18n
 	url = https://github.com/diia-open-source/be-pkg-i18n.git
+[submodule "be-pkg-errors"]
+	path = be-pkg-errors
+	url = https://github.com/diia-open-source/be-pkg-errors.git

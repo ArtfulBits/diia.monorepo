@@ -168,4 +168,7 @@ git remote add forked {forked_repo_url}
 git push --set-upstream forked my_new_branch_name_that_i_will_publish
 
 # click on published in terminal URL and create a PR with fixes
+
+# check versions of the packages
+fd package.json | xargs -I _ jq -c '. | { name:.name, version:.version}' _
 ```
