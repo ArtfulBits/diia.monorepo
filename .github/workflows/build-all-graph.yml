@@ -1,0 +1,869 @@
+name: Node.js Packages Build
+on:
+#  release:
+#    types:
+#      - created
+  push:
+    branches:
+      - main
+jobs:
+  build-notification-service-client:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "notification-service-client" ] && exit 0 
+           cd "notification-service-client" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-diia-crypto-client:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "diia-crypto-client" ] && exit 0 
+           cd "diia-crypto-client" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-auth-service-client:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "auth-service-client" ] && exit 0 
+           cd "auth-service-client" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-configs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-configs" ] && exit 0 
+           cd "be-configs" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-eslint-plugin:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-eslint-plugin" ] && exit 0 
+           cd "be-eslint-plugin" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-eslint-config:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-eslint-plugin
+      - build-be-configs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-eslint-config" ] && exit 0 
+           cd "be-eslint-config" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-genproto:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-eslint-config
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-genproto" ] && exit 0 
+           cd "be-genproto" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-types:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-eslint-config
+      - build-be-genproto
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-types" ] && exit 0 
+           cd "be-types" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-scaffold:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-eslint-config
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-scaffold" ] && exit 0 
+           cd "be-scaffold" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-eslint-config
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-test" ] && exit 0 
+           cd "be-pkg-test" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-i18n:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-i18n" ] && exit 0 
+           cd "be-pkg-i18n" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-errors:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-eslint-config
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-errors" ] && exit 0 
+           cd "be-pkg-errors" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-validators:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-validators" ] && exit 0 
+           cd "be-pkg-validators" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-utils:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-validators
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-utils" ] && exit 0 
+           cd "be-pkg-utils" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-healthcheck:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-healthcheck" ] && exit 0 
+           cd "be-pkg-healthcheck" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-diia-logger:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-eslint-config
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-diia-logger" ] && exit 0 
+           cd "be-diia-logger" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-http:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-diia-logger
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-http" ] && exit 0 
+           cd "be-pkg-http" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-env:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-diia-logger
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-env" ] && exit 0 
+           cd "be-pkg-env" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-crypto:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-diia-logger
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-crypto" ] && exit 0 
+           cd "be-pkg-crypto" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-redis:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-crypto
+      - build-be-diia-logger
+      - build-be-pkg-env
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-redis" ] && exit 0 
+           cd "be-pkg-redis" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-db:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-pkg-crypto
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+      - build-be-configs
+      - build-be-diia-logger
+      - build-be-pkg-env
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-db" ] && exit 0 
+           cd "be-pkg-db" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-cms:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-http
+      - build-be-types
+      - build-be-pkg-test
+      - build-be-diia-logger
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-cms" ] && exit 0 
+           cd "be-pkg-cms" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-analytics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-crypto
+      - build-be-diia-logger
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-genproto
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-analytics" ] && exit 0 
+           cd "be-pkg-analytics" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-diia-metrics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-crypto
+      - build-be-diia-logger
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-utils
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-diia-metrics" ] && exit 0 
+           cd "be-diia-metrics" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-diia-queue:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-crypto
+      - build-be-diia-logger
+      - build-be-diia-metrics
+      - build-be-pkg-env
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-eslint-plugin
+      - build-be-pkg-redis
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-diia-queue" ] && exit 0 
+           cd "be-diia-queue" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-pkg-providers:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-diia-logger
+      - build-be-diia-queue
+      - build-be-pkg-env
+      - build-be-pkg-errors
+      - build-be-pkg-redis
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+      - build-be-configs
+      - build-be-diia-metrics
+      - build-be-eslint-config
+      - build-be-pkg-test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-pkg-providers" ] && exit 0 
+           cd "be-pkg-providers" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-diia-app:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-crypto
+      - build-be-pkg-db
+      - build-be-diia-logger
+      - build-be-diia-metrics
+      - build-be-diia-queue
+      - build-be-pkg-env
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-eslint-plugin
+      - build-be-genproto
+      - build-be-pkg-healthcheck
+      - build-be-pkg-redis
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-diia-app" ] && exit 0 
+           cd "be-diia-app" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-be-user-service:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-pkg-analytics
+      - build-be-pkg-crypto
+      - build-be-pkg-db
+      - build-be-diia-app
+      - build-be-diia-logger
+      - build-be-diia-metrics
+      - build-be-diia-queue
+      - build-be-pkg-env
+      - build-be-pkg-errors
+      - build-be-pkg-healthcheck
+      - build-be-pkg-http
+      - build-be-pkg-i18n
+      - build-be-pkg-redis
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+      - build-be-configs
+      - build-be-eslint-config
+      - build-be-genproto
+      - build-be-scaffold
+      - build-be-pkg-test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "be-user-service" ] && exit 0 
+           cd "be-user-service" 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build-root:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: https://npm.pkg.github.com/
+          scope: "@diia-inhouse"
+      - run: npm config list
+      - run: |2-
+           [ ! -d "." ] && exit 0 
+           cd "." 
+           npm install 
+           npm test 
+           npm publish 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
