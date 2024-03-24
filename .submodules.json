@@ -78,11 +78,15 @@
   {
     "key": "be-eslint-config",
     "value": {
-      "branch": "origin/main",
+      "branch": "forked/ABIT-0001-resolved-too-strict-version-dependency-eslint-plugin",
       "remotes": [
         {
           "name": "origin",
           "url": "https://github.com/diia-open-source/be-eslint-config.git"
+        },
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-eslint-config.git"
         }
       ]
     }

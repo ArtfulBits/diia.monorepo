@@ -2,7 +2,7 @@
   "name": "diia-monorepo",
   "version": "0.0.1-alpha.1",
   "scripts": {
-    "build:graph": "npx ts-node ./bin/build.graph.ts",
+    "build:graph": "npx ts-node ./bin/build.graph.ts >.github/workflows/build-all-graph.yml",
     "dump:versions": "fd package.json --max-depth 2 | xargs -I _ jq -c '. | {name:.name, version:.version}' _"
   },
   "volta": {
@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/graphlib": "^2.1.12",
     "@types/yaml": "^1.9.7",
+    "dedent": "^1.5.1",
     "fast-glob": "^3.3.2",
     "graphlib": "^2.1.8",
     "ts-node": "^10.9.2",

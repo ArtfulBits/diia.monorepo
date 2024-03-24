@@ -1,8 +1,5 @@
 name: Node.js Packages Build
 on:
-#  release:
-#    types:
-#      - created
   push:
     branches:
       - main
@@ -12,93 +9,281 @@ jobs:
     permissions:
       contents: read
       packages: write
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "notification-service-client" ] && exit 0 
-           cd "notification-service-client" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "notification-service-client" ] && exit 0 || cd "notification-service-client"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "notification-service-client" ] && exit 0 || cd "notification-service-client"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-notification-service-client
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: notification-service-client/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "notification-service-client" ] && exit 0 || cd "notification-service-client"
+          npm publish
   build-diia-crypto-client:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "diia-crypto-client" ] && exit 0 
-           cd "diia-crypto-client" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "diia-crypto-client" ] && exit 0 || cd "diia-crypto-client"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "diia-crypto-client" ] && exit 0 || cd "diia-crypto-client"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-diia-crypto-client
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: diia-crypto-client/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "diia-crypto-client" ] && exit 0 || cd "diia-crypto-client"
+          npm publish
   build-auth-service-client:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "auth-service-client" ] && exit 0 
-           cd "auth-service-client" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "auth-service-client" ] && exit 0 || cd "auth-service-client"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "auth-service-client" ] && exit 0 || cd "auth-service-client"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-auth-service-client
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: auth-service-client/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "auth-service-client" ] && exit 0 || cd "auth-service-client"
+          npm publish
   build-be-configs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-configs" ] && exit 0 
-           cd "be-configs" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-configs" ] && exit 0 || cd "be-configs"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-configs" ] && exit 0 || cd "be-configs"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-configs
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-configs/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-configs" ] && exit 0 || cd "be-configs"
+          npm publish
   build-be-eslint-plugin:
     runs-on: ubuntu-latest
     permissions:
@@ -106,24 +291,71 @@ jobs:
       packages: write
     needs:
       - build-be-configs
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-eslint-plugin" ] && exit 0 
-           cd "be-eslint-plugin" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-eslint-plugin" ] && exit 0 || cd "be-eslint-plugin"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-eslint-plugin" ] && exit 0 || cd "be-eslint-plugin"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-eslint-plugin
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-eslint-plugin/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-eslint-plugin" ] && exit 0 || cd "be-eslint-plugin"
+          npm publish
   build-be-eslint-config:
     runs-on: ubuntu-latest
     permissions:
@@ -132,24 +364,71 @@ jobs:
     needs:
       - build-be-eslint-plugin
       - build-be-configs
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-eslint-config" ] && exit 0 
-           cd "be-eslint-config" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-eslint-config" ] && exit 0 || cd "be-eslint-config"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-eslint-config" ] && exit 0 || cd "be-eslint-config"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-eslint-config
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-eslint-config/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-eslint-config" ] && exit 0 || cd "be-eslint-config"
+          npm publish
   build-be-genproto:
     runs-on: ubuntu-latest
     permissions:
@@ -158,24 +437,71 @@ jobs:
     needs:
       - build-be-configs
       - build-be-eslint-config
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-genproto" ] && exit 0 
-           cd "be-genproto" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-genproto" ] && exit 0 || cd "be-genproto"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-genproto" ] && exit 0 || cd "be-genproto"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-genproto
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-genproto/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-genproto" ] && exit 0 || cd "be-genproto"
+          npm publish
   build-be-types:
     runs-on: ubuntu-latest
     permissions:
@@ -185,24 +511,71 @@ jobs:
       - build-be-configs
       - build-be-eslint-config
       - build-be-genproto
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-types" ] && exit 0 
-           cd "be-types" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-types" ] && exit 0 || cd "be-types"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-types" ] && exit 0 || cd "be-types"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-types
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-types/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-types" ] && exit 0 || cd "be-types"
+          npm publish
   build-be-scaffold:
     runs-on: ubuntu-latest
     permissions:
@@ -212,24 +585,71 @@ jobs:
       - build-be-configs
       - build-be-eslint-config
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-scaffold" ] && exit 0 
-           cd "be-scaffold" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-scaffold" ] && exit 0 || cd "be-scaffold"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-scaffold" ] && exit 0 || cd "be-scaffold"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-scaffold
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-scaffold/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-scaffold" ] && exit 0 || cd "be-scaffold"
+          npm publish
   build-be-pkg-test:
     runs-on: ubuntu-latest
     permissions:
@@ -239,24 +659,71 @@ jobs:
       - build-be-configs
       - build-be-eslint-config
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-test" ] && exit 0 
-           cd "be-pkg-test" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-test" ] && exit 0 || cd "be-pkg-test"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-test" ] && exit 0 || cd "be-pkg-test"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-test
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-test/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-test" ] && exit 0 || cd "be-pkg-test"
+          npm publish
   build-be-pkg-i18n:
     runs-on: ubuntu-latest
     permissions:
@@ -267,24 +734,71 @@ jobs:
       - build-be-eslint-config
       - build-be-pkg-test
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-i18n" ] && exit 0 
-           cd "be-pkg-i18n" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-i18n" ] && exit 0 || cd "be-pkg-i18n"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-i18n" ] && exit 0 || cd "be-pkg-i18n"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-i18n
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-i18n/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-i18n" ] && exit 0 || cd "be-pkg-i18n"
+          npm publish
   build-be-pkg-errors:
     runs-on: ubuntu-latest
     permissions:
@@ -294,24 +808,71 @@ jobs:
       - build-be-configs
       - build-be-eslint-config
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-errors" ] && exit 0 
-           cd "be-pkg-errors" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-errors" ] && exit 0 || cd "be-pkg-errors"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-errors" ] && exit 0 || cd "be-pkg-errors"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-errors
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-errors/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-errors" ] && exit 0 || cd "be-pkg-errors"
+          npm publish
   build-be-pkg-validators:
     runs-on: ubuntu-latest
     permissions:
@@ -322,24 +883,71 @@ jobs:
       - build-be-pkg-errors
       - build-be-eslint-config
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-validators" ] && exit 0 
-           cd "be-pkg-validators" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-validators" ] && exit 0 || cd "be-pkg-validators"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-validators" ] && exit 0 || cd "be-pkg-validators"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-validators
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-validators/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-validators" ] && exit 0 || cd "be-pkg-validators"
+          npm publish
   build-be-pkg-utils:
     runs-on: ubuntu-latest
     permissions:
@@ -352,24 +960,71 @@ jobs:
       - build-be-pkg-test
       - build-be-types
       - build-be-pkg-validators
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-utils" ] && exit 0 
-           cd "be-pkg-utils" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-utils" ] && exit 0 || cd "be-pkg-utils"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-utils" ] && exit 0 || cd "be-pkg-utils"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-utils
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-utils/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-utils" ] && exit 0 || cd "be-pkg-utils"
+          npm publish
   build-be-pkg-healthcheck:
     runs-on: ubuntu-latest
     permissions:
@@ -383,24 +1038,71 @@ jobs:
       - build-be-types
       - build-be-pkg-utils
       - build-be-pkg-validators
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-healthcheck" ] && exit 0 
-           cd "be-pkg-healthcheck" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-healthcheck" ] && exit 0 || cd "be-pkg-healthcheck"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-healthcheck" ] && exit 0 || cd "be-pkg-healthcheck"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-healthcheck
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-healthcheck/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-healthcheck" ] && exit 0 || cd "be-pkg-healthcheck"
+          npm publish
   build-be-diia-logger:
     runs-on: ubuntu-latest
     permissions:
@@ -410,24 +1112,71 @@ jobs:
       - build-be-configs
       - build-be-eslint-config
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-diia-logger" ] && exit 0 
-           cd "be-diia-logger" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-diia-logger" ] && exit 0 || cd "be-diia-logger"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-diia-logger" ] && exit 0 || cd "be-diia-logger"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-diia-logger
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-diia-logger/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-diia-logger" ] && exit 0 || cd "be-diia-logger"
+          npm publish
   build-be-pkg-http:
     runs-on: ubuntu-latest
     permissions:
@@ -440,24 +1189,71 @@ jobs:
       - build-be-eslint-config
       - build-be-pkg-test
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-http" ] && exit 0 
-           cd "be-pkg-http" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-http" ] && exit 0 || cd "be-pkg-http"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-http" ] && exit 0 || cd "be-pkg-http"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-http
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-http/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-http" ] && exit 0 || cd "be-pkg-http"
+          npm publish
   build-be-pkg-env:
     runs-on: ubuntu-latest
     permissions:
@@ -469,24 +1265,71 @@ jobs:
       - build-be-eslint-config
       - build-be-pkg-test
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-env" ] && exit 0 
-           cd "be-pkg-env" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-env" ] && exit 0 || cd "be-pkg-env"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-env" ] && exit 0 || cd "be-pkg-env"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-env
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-env/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-env" ] && exit 0 || cd "be-pkg-env"
+          npm publish
   build-be-pkg-crypto:
     runs-on: ubuntu-latest
     permissions:
@@ -501,24 +1344,71 @@ jobs:
       - build-be-types
       - build-be-pkg-utils
       - build-be-pkg-validators
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-crypto" ] && exit 0 
-           cd "be-pkg-crypto" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-crypto" ] && exit 0 || cd "be-pkg-crypto"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-crypto" ] && exit 0 || cd "be-pkg-crypto"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-crypto
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-crypto/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-crypto" ] && exit 0 || cd "be-pkg-crypto"
+          npm publish
   build-be-pkg-redis:
     runs-on: ubuntu-latest
     permissions:
@@ -535,24 +1425,71 @@ jobs:
       - build-be-types
       - build-be-pkg-utils
       - build-be-pkg-validators
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-redis" ] && exit 0 
-           cd "be-pkg-redis" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-redis" ] && exit 0 || cd "be-pkg-redis"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-redis" ] && exit 0 || cd "be-pkg-redis"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-redis
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-redis/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-redis" ] && exit 0 || cd "be-pkg-redis"
+          npm publish
   build-be-pkg-db:
     runs-on: ubuntu-latest
     permissions:
@@ -569,55 +1506,71 @@ jobs:
       - build-be-eslint-config
       - build-be-pkg-test
       - build-be-types
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-db" ] && exit 0 
-           cd "be-pkg-db" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-db" ] && exit 0 || cd "be-pkg-db"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-db" ] && exit 0 || cd "be-pkg-db"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-  build-be-pkg-cms:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs:
-      - build-be-configs
-      - build-be-pkg-errors
-      - build-be-eslint-config
-      - build-be-pkg-http
-      - build-be-types
-      - build-be-pkg-test
-      - build-be-diia-logger
-    steps:
-      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
         with:
-          submodules: "true"
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-cms" ] && exit 0 
-           cd "be-pkg-cms" 
-           npm install 
-           npm test 
-           npm publish 
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          name: artifact-be-pkg-db
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-db/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-db" ] && exit 0 || cd "be-pkg-db"
+          npm publish
   build-be-pkg-analytics:
     runs-on: ubuntu-latest
     permissions:
@@ -634,24 +1587,149 @@ jobs:
       - build-be-types
       - build-be-pkg-utils
       - build-be-pkg-validators
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-analytics" ] && exit 0 
-           cd "be-pkg-analytics" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-analytics
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-analytics/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
+          npm publish
+  build-be-pkg-cms:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-pkg-http
+      - build-be-types
+      - build-be-pkg-test
+      - build-be-diia-logger
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
+    steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-cms" ] && exit 0 || cd "be-pkg-cms"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-cms" ] && exit 0 || cd "be-pkg-cms"
+          npm install
+          npm test --if-present
+          npm pack
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-cms
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-cms/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-cms" ] && exit 0 || cd "be-pkg-cms"
+          npm publish
   build-be-diia-metrics:
     runs-on: ubuntu-latest
     permissions:
@@ -666,24 +1744,71 @@ jobs:
       - build-be-pkg-test
       - build-be-types
       - build-be-pkg-utils
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-diia-metrics" ] && exit 0 
-           cd "be-diia-metrics" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-diia-metrics" ] && exit 0 || cd "be-diia-metrics"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-diia-metrics" ] && exit 0 || cd "be-diia-metrics"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-diia-metrics
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-diia-metrics/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-diia-metrics" ] && exit 0 || cd "be-diia-metrics"
+          npm publish
   build-be-diia-queue:
     runs-on: ubuntu-latest
     permissions:
@@ -703,24 +1828,71 @@ jobs:
       - build-be-types
       - build-be-pkg-utils
       - build-be-pkg-validators
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-diia-queue" ] && exit 0 
-           cd "be-diia-queue" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-diia-queue" ] && exit 0 || cd "be-diia-queue"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-diia-queue" ] && exit 0 || cd "be-diia-queue"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-diia-queue
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-diia-queue/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-diia-queue" ] && exit 0 || cd "be-diia-queue"
+          npm publish
   build-be-pkg-providers:
     runs-on: ubuntu-latest
     permissions:
@@ -739,24 +1911,71 @@ jobs:
       - build-be-diia-metrics
       - build-be-eslint-config
       - build-be-pkg-test
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-pkg-providers" ] && exit 0 
-           cd "be-pkg-providers" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-providers" ] && exit 0 || cd "be-pkg-providers"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-providers" ] && exit 0 || cd "be-pkg-providers"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-providers
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-providers/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-providers" ] && exit 0 || cd "be-pkg-providers"
+          npm publish
   build-be-diia-app:
     runs-on: ubuntu-latest
     permissions:
@@ -780,24 +1999,71 @@ jobs:
       - build-be-types
       - build-be-pkg-utils
       - build-be-pkg-validators
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-diia-app" ] && exit 0 
-           cd "be-diia-app" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-diia-app" ] && exit 0 || cd "be-diia-app"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-diia-app" ] && exit 0 || cd "be-diia-app"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-diia-app
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-diia-app/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-diia-app" ] && exit 0 || cd "be-diia-app"
+          npm publish
   build-be-user-service:
     runs-on: ubuntu-latest
     permissions:
@@ -825,45 +2091,139 @@ jobs:
       - build-be-genproto
       - build-be-scaffold
       - build-be-pkg-test
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "be-user-service" ] && exit 0 
-           cd "be-user-service" 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-user-service" ] && exit 0 || cd "be-user-service"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-user-service" ] && exit 0 || cd "be-user-service"
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-user-service
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-user-service/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-user-service" ] && exit 0 || cd "be-user-service"
+          npm publish
   build-root:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
     steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
-          registry-url: https://npm.pkg.github.com/
-          scope: "@diia-inhouse"
-      - run: npm config list
-      - run: |2-
-           [ ! -d "." ] && exit 0 
-           cd "." 
-           npm install 
-           npm test 
-           npm publish 
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "." ] && exit 0 || cd "."
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "." ] && exit 0 || cd "."
+          npm install
+          npm test --if-present
+          npm pack
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-.
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: ./diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "." ] && exit 0 || cd "."
+          npm publish
 

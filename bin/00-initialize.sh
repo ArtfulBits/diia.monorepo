@@ -81,16 +81,27 @@ function sync() {
         continue
       fi
 
+      local httpUrl=$(echo "$url" | sed "s#git@github.com:#https://github.com/#g")
+
       pushd "$dir" &>/dev/null || exit
+      # re-configure the remote if it does not exist or have a different URL
       if ! git remote get-url "$name" &>/dev/null; then
         echo "$NO ${YELLOW}${dir}${RESET} has no remote ${GRAY}$name${RESET} - fixing now!"
-        git remote add "$name" "$url"
-        echo git fetch --all
+        git remote add "$name" "$httpUrl"
         echo "$NP ${YELLOW}${dir}${RESET} created remote ${GRAY}$name${RESET}"
       else
-        # echo "$OK ${YELLOW}${dir}${RESET} has remote ${GRAY}$name${RESET}"
-        :
+        echo "$OK ${YELLOW}${dir}${RESET} has remote ${GRAY}$name${RESET}"
+        local configuredUrl=$(git remote get-url "$name")
+
+        # re-configure the remote URL to HTTPS
+        if [[ "$configuredUrl" != "$httpUrl" ]]; then
+          echo "$NO ${YELLOW}${dir}${RESET} set remote ${GRAY}$name${RESET} to ($configuredUrl)"
+          git remote set-url "$name" "$httpUrl" 
+          echo "$NP ${YELLOW}${dir}${RESET} remote ${GRAY}$name${RESET} re-configured to ($httpUrl)"
+        fi
       fi
+      # fetch the remotes
+      git fetch --all
       popd &>/dev/null || exit
     done
 
@@ -100,7 +111,7 @@ function sync() {
     if [[ "$upstream" == "$branch" ]]; then
       echo "$NP ${YELLOW}${dir}${RESET} is on branch ${GRAY}$branch${RESET}"
     else
-      echo "$NO ${YELLOW}${dir}${RESET} is on branch ${GRAY}$upstream${RESET} - switching to ${GRAY}$branch${RESET}"
+      echo "$NO ${YELLOW}${dir}${RESET} is on branch '${GRAY}$upstream${RESET}' - switching to ${GRAY}$branch${RESET}"
       # take the last part of branch name "{remote}/{branch}"
       local branchSegment=$(echo "$branch" | awk -F'/' '{print $2}')
       git checkout "${branchSegment}"
