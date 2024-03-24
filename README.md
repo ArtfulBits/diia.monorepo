@@ -2,6 +2,16 @@
 
 Monorepo that configures https://github.com/diia-open-source repos as one big working space
 
+- [diia.monorepo](#diiamonorepo)
+  - [Tools](#tools)
+  - [Initialization](#initialization)
+    - [Configuration To Correct Branches](#configuration-to-correct-branches)
+  - [Approach](#approach)
+  - [Local Development](#local-development)
+  - [CI/CD configuration](#cicd-configuration)
+  - [How to Resolve the Npm Build Issues](#how-to-resolve-the-npm-build-issues)
+  - [Prepare to Test Run](#prepare-to-test-run)
+
 ## Tools
 
 ```bash
@@ -9,8 +19,14 @@ Monorepo that configures https://github.com/diia-open-source repos as one big wo
 curl https://get.volta.sh | bash
 
 # fix/pin node version for repository
-cd be-configs
 volta pin node@18
+
+# DIRENV
+curl -sfL https://direnv.net/install.sh | bash
+direnv allow
+
+# Act (Run Github actions locally)
+brew install act
 ```
 
 ## Initialization
@@ -20,6 +36,16 @@ git submodule init
 git submodule update --init
 
 # ref: https://stackoverflow.com/questions/3796927/how-do-i-git-clone-a-repo-including-its-submodules
+```
+
+### Configuration To Correct Branches
+
+```bash
+# apply saved in .submodules.json file configuration on current repository
+bin/00-initialize.sh --sync
+
+# to save current configuration
+bin/00-initialize.sh --capture
 ```
 
 ## Approach
@@ -100,7 +126,7 @@ npm adduser --registry https://registry.dev:4873/
 # verify that new user created
 cat .verdaccio/config/htpasswd
 
-# configure NPM to use local registry 
+# configure NPM to use local registry
 npm set registry https://registry.dev:4873/
 npm profile set password --registry https://registry.dev:4873/
 
@@ -119,19 +145,19 @@ npm install
 npm publish
 ```
 
-expected output: 
+expected output:
 
 ```text
-npm notice === Tarball Details === 
-npm notice name:          @diia-inhouse/configs                   
-npm notice version:       1.27.2                                  
-npm notice filename:      diia-inhouse-configs-1.27.2.tgz         
-npm notice package size:  12.3 kB                                 
-npm notice unpacked size: 40.7 kB                                 
+npm notice === Tarball Details ===
+npm notice name:          @diia-inhouse/configs
+npm notice version:       1.27.2
+npm notice filename:      diia-inhouse-configs-1.27.2.tgz
+npm notice package size:  12.3 kB
+npm notice unpacked size: 40.7 kB
 npm notice shasum:        0ba18735bfcd22bc6806a925196ecd3a1b0a968f
 npm notice integrity:     sha512-V9x/nGrpbpx9L[...]EGlmrNeMMQs2g==
-npm notice total files:   30                                      
-npm notice 
+npm notice total files:   30
+npm notice
 npm notice Publishing to https://registry.dev:4873 with tag latest and default access
 + @diia-inhouse/configs@1.27.2
 ```

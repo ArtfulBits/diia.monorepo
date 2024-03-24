@@ -1,0 +1,382 @@
+[
+  {
+    "key": "be-configs",
+    "value": {
+      "branch": "origin/main",
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-configs.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-diia-app",
+    "value": {
+      "branch": "forked/ABIT-0020-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-diia-app.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-diia-app.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-diia-logger",
+    "value": {
+      "branch": "forked/ABIT-0010-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-diia-logger.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-diia-logger.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-diia-metrics",
+    "value": {
+      "branch": "forked/ABIT-0017-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-diia-metrics.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-diia-metrics.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-diia-queue",
+    "value": {
+      "branch": "forked/ABIT-0018-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-diia-queue.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-diia-queue.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-eslint-config",
+    "value": {
+      "branch": "origin/main",
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-eslint-config.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-eslint-plugin",
+    "value": {
+      "branch": "",
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-eslint-plugin.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-genproto",
+    "value": {
+      "branch": "forked/ABIT-0002-badly-resolved-file-path",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-genproto.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-genproto.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-analytics",
+    "value": {
+      "branch": "origin/main",
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-analytics.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-cms",
+    "value": {
+      "branch": "forked/ABIT-0016-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-cms.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-cms.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-crypto",
+    "value": {
+      "branch": "forked/ABIT-0013-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-crypto.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-crypto.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-db",
+    "value": {
+      "branch": "forked/ABIT-0015-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-db.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-db.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-env",
+    "value": {
+      "branch": "forked/ABIT-0012-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-env.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-env.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-errors",
+    "value": {
+      "branch": "forked/ABIT-0006-wrong-dependecies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-errors.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-errors.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-healthcheck",
+    "value": {
+      "branch": "forked/ABIT-0009-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-healthcheck.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-healthcheck.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-http",
+    "value": {
+      "branch": "forked/ABIT-0011-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-http.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-http.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-i18n",
+    "value": {
+      "branch": "origin/main",
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-i18n.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-providers",
+    "value": {
+      "branch": "forked/ABIT-0019-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-providers.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-providers.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-redis",
+    "value": {
+      "branch": "forked/ABIT-0014-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-redis.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-redis.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-test",
+    "value": {
+      "branch": "forked/ABIT-0005-wrong-typescript-and-type-fest-versions",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-test.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-test.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-utils",
+    "value": {
+      "branch": "forked/ABIT-0008-wrong-dependencies-and-outdated-types",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-utils.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-utils.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-pkg-validators",
+    "value": {
+      "branch": "forked/ABIT-0007-wrong-dependecies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-validators.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-pkg-validators.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-scaffold",
+    "value": {
+      "branch": "forked/ABIT-0004-wrong-typescript-and-type-fest-versions",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-scaffold.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-scaffold.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-types",
+    "value": {
+      "branch": "forked/ABIT-0003-wrong-typescript-version-executed",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-types.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-types.git"
+        }
+      ]
+    }
+  },
+  {
+    "key": "be-user-service",
+    "value": {
+      "branch": "forked/ABIT-0021-wrong-dependencies",
+      "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-user-service.git"
+        },
+        {
+          "name": "origin",
+          "url": "https://github.com/diia-open-source/be-user-service.git"
+        }
+      ]
+    }
+  }
+]
