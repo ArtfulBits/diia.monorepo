@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2155,SC2207
 
-# Configure all submodules:
-# - checkout the correct branch
-# - configure submodule remotes
+if [[ -z $TERM ]]; then export TERM=xterm-256color; fi
 
 readonly VERSION="0.0.1"
 readonly RESET=$(tput sgr0)
@@ -53,9 +51,6 @@ function capture() {
   echo "{ $(capture:repo) }" |
     jq '. | to_entries | map_values(.value |= del(.remotes[0]))'
 }
-
-# To Capture the configuration
-# capture "$@" >.submodules.json
 
 function sync() {
   local submodules="" submodule="" dir="" branch="" remote="" name="" url="" upstream=""

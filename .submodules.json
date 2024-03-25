@@ -94,7 +94,7 @@
   {
     "key": "be-eslint-plugin",
     "value": {
-      "branch": "",
+      "branch": "origin/main",
       "remotes": [
         {
           "name": "origin",
