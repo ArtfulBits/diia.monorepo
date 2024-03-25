@@ -74,6 +74,12 @@ const composeWorkflowJobs = (graph, lookupNameToDir) => (moduleName: string, ind
           },
         },
         {
+          // ref: https://www.andreamedda.com/posts/go-buf-github-actions/
+          // ref: https://github.com/arduino/setup-protoc
+          name: "Install Protoc",
+          uses: "arduino/setup-protoc@v3",
+        },
+        {
           uses: "actions/setup-node@v4",
           with: {
             "node-version": "18.19.1",

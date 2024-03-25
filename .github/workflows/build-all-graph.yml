@@ -29,6 +29,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -99,6 +101,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -169,6 +173,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -239,6 +245,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -311,6 +319,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -384,6 +394,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -457,6 +469,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -531,6 +545,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -605,6 +621,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -679,6 +697,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -754,6 +774,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -828,6 +850,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -903,6 +927,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -980,6 +1006,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1058,6 +1086,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1132,6 +1162,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1209,6 +1241,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1285,6 +1319,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1364,6 +1400,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1445,6 +1483,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1526,6 +1566,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1571,87 +1613,6 @@ jobs:
         run: |-
           [ ! -d "be-pkg-db" ] && exit 0 || cd "be-pkg-db"
           npm publish
-  build-be-pkg-analytics:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs:
-      - build-be-configs
-      - build-be-pkg-crypto
-      - build-be-diia-logger
-      - build-be-pkg-errors
-      - build-be-eslint-config
-      - build-be-genproto
-      - build-be-pkg-test
-      - build-be-types
-      - build-be-pkg-utils
-      - build-be-pkg-validators
-    services:
-      verdaccio:
-        image: verdaccio/verdaccio
-        ports:
-          - 4873:4873
-        volumes:
-          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
-        options: --name verdaccio
-    steps:
-      - name: Chown user
-        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
-      - uses: actions/checkout@v4
-        with:
-          submodules: "true"
-      - name: Sync submodules configuration
-        run: bin/00-initialize.sh --sync
-      - name: Restart Verdaccio
-        uses: docker://docker
-        with:
-          args: docker restart verdaccio
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.19.1
-          registry-url: http://localhost:4873/
-      - name: Configure NPM registry to Verdaccio for Package
-        run: |-
-          rm -rf .npmrc && touch .npmrc
-          # configure global registry
-          npm set registry http://localhost:4873/
-          # create. test user for publishing
-          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
-          # save token in .npmrc
-          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
-          # do now configuration in sub-dir
-          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
-          rm -rf .npmrc && touch .npmrc
-          # login as a test user
-          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
-          # publish config for review
-          npm config list
-      - run: mkdir -p .artifacts
-      - uses: actions/download-artifact@v4
-        with:
-          path: .artifacts
-      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
-      - name: Build, Test and Pack
-        run: |-
-          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
-          npm install
-          npm test --if-present
-          npm pack
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: artifact-be-pkg-analytics
-          overwrite: true
-          compression-level: 0
-          if-no-files-found: warn
-          retention-days: 5
-          path: be-pkg-analytics/diia-inhouse-*.tgz
-      - name: Publish NPM Package to Verdaccio
-        run: |-
-          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
-          npm publish
   build-be-pkg-cms:
     runs-on: ubuntu-latest
     permissions:
@@ -1685,6 +1646,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1730,6 +1693,89 @@ jobs:
         run: |-
           [ ! -d "be-pkg-cms" ] && exit 0 || cd "be-pkg-cms"
           npm publish
+  build-be-pkg-analytics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-be-configs
+      - build-be-pkg-crypto
+      - build-be-diia-logger
+      - build-be-pkg-errors
+      - build-be-eslint-config
+      - build-be-genproto
+      - build-be-pkg-test
+      - build-be-types
+      - build-be-pkg-utils
+      - build-be-pkg-validators
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+        volumes:
+          - ${{ github.workspace }}/.github/workflows/verdaccio/conf:/verdaccio/conf
+        options: --name verdaccio
+    steps:
+      - name: Chown user
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - name: Sync submodules configuration
+        run: bin/00-initialize.sh --sync
+      - name: Restart Verdaccio
+        uses: docker://docker
+        with:
+          args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          registry-url: http://localhost:4873/
+      - name: Configure NPM registry to Verdaccio for Package
+        run: |-
+          rm -rf .npmrc && touch .npmrc
+          # configure global registry
+          npm set registry http://localhost:4873/
+          # create. test user for publishing
+          npx npm-cli-adduser -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # save token in .npmrc
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # do now configuration in sub-dir
+          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
+          rm -rf .npmrc && touch .npmrc
+          # login as a test user
+          npx npm-cli-login -u test -p 1234 -e test@domain.test -r http://localhost:4873
+          # publish config for review
+          npm config list
+      - run: mkdir -p .artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: .artifacts
+      - run: find .artifacts -type f -name "*.tgz" -exec npm publish {} \;
+      - name: Build, Test and Pack
+        run: |-
+          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
+          npm install
+          npm test --if-present
+          npm pack
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-be-pkg-analytics
+          overwrite: true
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 5
+          path: be-pkg-analytics/diia-inhouse-*.tgz
+      - name: Publish NPM Package to Verdaccio
+        run: |-
+          [ ! -d "be-pkg-analytics" ] && exit 0 || cd "be-pkg-analytics"
+          npm publish
   build-be-diia-metrics:
     runs-on: ubuntu-latest
     permissions:
@@ -1764,6 +1810,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1848,6 +1896,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -1931,6 +1981,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -2019,6 +2071,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -2111,6 +2165,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
@@ -2181,6 +2237,8 @@ jobs:
         uses: docker://docker
         with:
           args: docker restart verdaccio
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - uses: actions/setup-node@v4
         with:
           node-version: 18.19.1
