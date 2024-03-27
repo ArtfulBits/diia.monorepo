@@ -6,9 +6,6 @@ on:
 jobs:
   build-notification-service-client:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     services:
       verdaccio:
         image: verdaccio/verdaccio
@@ -71,9 +68,6 @@ jobs:
           path: notification-service-client/diia-inhouse-*.tgz
   build-diia-crypto-client:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     services:
       verdaccio:
         image: verdaccio/verdaccio
@@ -136,9 +130,6 @@ jobs:
           path: diia-crypto-client/diia-inhouse-*.tgz
   build-auth-service-client:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     services:
       verdaccio:
         image: verdaccio/verdaccio
@@ -201,9 +192,6 @@ jobs:
           path: auth-service-client/diia-inhouse-*.tgz
   build-be-configs:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     services:
       verdaccio:
         image: verdaccio/verdaccio
@@ -266,9 +254,6 @@ jobs:
           path: be-configs/diia-inhouse-*.tgz
   build-be-eslint-plugin:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
     services:
@@ -333,9 +318,6 @@ jobs:
           path: be-eslint-plugin/diia-inhouse-*.tgz
   build-be-eslint-config:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-eslint-plugin
       - build-be-configs
@@ -401,9 +383,6 @@ jobs:
           path: be-eslint-config/diia-inhouse-*.tgz
   build-be-genproto:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-eslint-config
@@ -469,9 +448,6 @@ jobs:
           path: be-genproto/diia-inhouse-*.tgz
   build-be-types:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-eslint-config
@@ -538,9 +514,6 @@ jobs:
           path: be-types/diia-inhouse-*.tgz
   build-be-scaffold:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-eslint-config
@@ -607,9 +580,6 @@ jobs:
           path: be-scaffold/diia-inhouse-*.tgz
   build-be-pkg-test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-eslint-config
@@ -676,9 +646,6 @@ jobs:
           path: be-pkg-test/diia-inhouse-*.tgz
   build-be-pkg-i18n:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-eslint-config
@@ -746,9 +713,6 @@ jobs:
           path: be-pkg-i18n/diia-inhouse-*.tgz
   build-be-pkg-errors:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-eslint-config
@@ -815,9 +779,6 @@ jobs:
           path: be-pkg-errors/diia-inhouse-*.tgz
   build-be-pkg-validators:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-errors
@@ -885,9 +846,6 @@ jobs:
           path: be-pkg-validators/diia-inhouse-*.tgz
   build-be-pkg-utils:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-errors
@@ -957,9 +915,6 @@ jobs:
           path: be-pkg-utils/diia-inhouse-*.tgz
   build-be-pkg-healthcheck:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-errors
@@ -1030,9 +985,6 @@ jobs:
           path: be-pkg-healthcheck/diia-inhouse-*.tgz
   build-be-diia-logger:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-eslint-config
@@ -1099,9 +1051,6 @@ jobs:
           path: be-diia-logger/diia-inhouse-*.tgz
   build-be-pkg-http:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-diia-logger
@@ -1171,9 +1120,6 @@ jobs:
           path: be-pkg-http/diia-inhouse-*.tgz
   build-be-pkg-env:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-diia-logger
@@ -1242,9 +1188,6 @@ jobs:
           path: be-pkg-env/diia-inhouse-*.tgz
   build-be-pkg-crypto:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-diia-logger
@@ -1316,9 +1259,6 @@ jobs:
           path: be-pkg-crypto/diia-inhouse-*.tgz
   build-be-pkg-redis:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-crypto
@@ -1392,9 +1332,6 @@ jobs:
           path: be-pkg-redis/diia-inhouse-*.tgz
   build-be-pkg-db:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-pkg-crypto
       - build-be-pkg-utils
@@ -1468,9 +1405,6 @@ jobs:
           path: be-pkg-db/diia-inhouse-*.tgz
   build-be-pkg-cms:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-errors
@@ -1541,9 +1475,6 @@ jobs:
           path: be-pkg-cms/diia-inhouse-*.tgz
   build-be-pkg-analytics:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-crypto
@@ -1617,9 +1548,6 @@ jobs:
           path: be-pkg-analytics/diia-inhouse-*.tgz
   build-be-diia-metrics:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-crypto
@@ -1691,9 +1619,6 @@ jobs:
           path: be-diia-metrics/diia-inhouse-*.tgz
   build-be-diia-queue:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-crypto
@@ -1770,9 +1695,6 @@ jobs:
           path: be-diia-queue/diia-inhouse-*.tgz
   build-be-pkg-providers:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-diia-logger
       - build-be-diia-queue
@@ -1848,9 +1770,6 @@ jobs:
           path: be-pkg-providers/diia-inhouse-*.tgz
   build-be-diia-app:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-configs
       - build-be-pkg-crypto
@@ -1931,9 +1850,6 @@ jobs:
           path: be-diia-app/diia-inhouse-*.tgz
   build-be-user-service:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-be-pkg-analytics
       - build-be-pkg-crypto
@@ -2018,9 +1934,6 @@ jobs:
           path: be-user-service/diia-inhouse-*.tgz
   build-root:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     services:
       verdaccio:
         image: verdaccio/verdaccio

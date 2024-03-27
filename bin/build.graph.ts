@@ -49,7 +49,7 @@ const composeWorkflowJobs = (graph: Graph, lookupNameToDir: Record<string, strin
             buildName,
             {
                 "runs-on": "ubuntu-latest",
-                permissions: {contents: "read", packages: "write"},
+                // permissions: {contents: "read", packages: "write"},
                 ...(dependencies.size === 0 ? {} : {needs: [...Array.from(dependencies)]}),
                 services,
                 steps: [
@@ -155,6 +155,8 @@ const main = async ({dir}: Args = {}) => {
     // extract dependencies from package.json files
     const all = files
         .filter((path: string) => !path.includes(NODE_MODULES))
+        .filter((path: string) => !path.includes("clients/"))
+        .filter((path: string) => !path.includes("services/"))
         .map((filePath: string) => {
             const resolvedPath = path.resolve(cwd, filePath);
             const packageJson = readPackageJson(resolvedPath);
