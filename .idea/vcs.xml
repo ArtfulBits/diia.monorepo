@@ -3,9 +3,35 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/be-configs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-diia-app" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-diia-logger" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-diia-metrics" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-diia-queue" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/be-eslint-config" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/be-eslint-plugin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/be-genproto" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-analytics" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-cms" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-crypto" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-db" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-env" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-errors" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-healthcheck" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-http" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-i18n" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-providers" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-redis" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-utils" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-pkg-validators" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-scaffold" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/be-types" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/be-user-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clients/be-address-service-client" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clients/be-analytics-service-client" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clients/be-auth-service-client" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clients/be-notification-service-client" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clients/be-public-service-catalog-client" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/diia-setup-howto" vcs="Git" />
   </component>
 </project>
