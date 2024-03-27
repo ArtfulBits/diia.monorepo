@@ -78,15 +78,11 @@
   {
     "key": "be-eslint-config",
     "value": {
-      "branch": "forked/ABIT-0001-resolved-too-strict-version-dependency-eslint-plugin",
+      "branch": "origin/main",
       "remotes": [
         {
           "name": "origin",
           "url": "https://github.com/diia-open-source/be-eslint-config.git"
-        },
-        {
-          "name": "forked",
-          "url": "git@github.com:OleksandrKucherenko/be-eslint-config.git"
         }
       ]
     }
@@ -122,8 +118,12 @@
   {
     "key": "be-pkg-analytics",
     "value": {
-      "branch": "origin/main",
+      "branch": "forked/ABIT-0022-not-synced-datatype-in-modules",
       "remotes": [
+        {
+          "name": "forked",
+          "url": "git@github.com:OleksandrKucherenko/be-pkg-analytics.git"
+        },
         {
           "name": "origin",
           "url": "https://github.com/diia-open-source/be-pkg-analytics.git"

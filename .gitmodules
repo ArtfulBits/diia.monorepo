@@ -105,15 +105,20 @@
 [submodule "clients/be-public-service-catalog-client"]
 	path = clients/be-public-service-catalog-client
 	url = https://github.com/kant2002/be-public-service-catalog-client.git
+	ignore = untracked
 [submodule "clients/be-auth-service-client"]
 	path = clients/be-auth-service-client
 	url = https://github.com/kant2002/be-auth-service-client.git
+	ignore = untracked
 [submodule "clients/be-address-service-client"]
 	path = clients/be-address-service-client
 	url = https://github.com/kant2002/be-address-service-client.git
+	ignore = untracked
 [submodule "clients/be-analytics-service-client"]
 	path = clients/be-analytics-service-client
 	url = https://github.com/kant2002/be-analytics-service-client
+	ignore = untracked
 [submodule "clients/be-notification-service-client"]
 	path = clients/be-notification-service-client
 	url = https://github.com/kant2002/be-notification-service-client.git
+	ignore = untracked
