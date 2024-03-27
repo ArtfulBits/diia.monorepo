@@ -1,0 +1,4 @@
+{
+  "extends": "@diia-inhouse/configs/tsconfig",
+  "include": ["src/**/*"]
+}

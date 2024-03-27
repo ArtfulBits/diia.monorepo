@@ -1,0 +1,23 @@
+{
+  "name": "@diia-inhouse/ping-service",
+  "version": "1.0.0",
+  "description": "Simplest PING gPRC service",
+  "main": "src/index.ts",
+  "author": "Oleksandr Kucherenko",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "@diia-inhouse/configs": "^1.27.1"
+  },
+  "eslintConfig": {
+    "extends": "@diia-inhouse/eslint-config"
+  },
+  "jest": {
+    "preset": "@diia-inhouse/configs/dist/jest"
+  }
+}
