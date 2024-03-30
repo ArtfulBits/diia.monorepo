@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package diia;
+
+service Ping {
+  rpc ping(PingRequest) returns (PingResponse);
+  rpc error(ErrorRequest) returns (ErrorResponse);
+  rpc echo(EchoRequest) returns (EchoResponse);
+}
+
+message PingRequest {}
+
+message PingResponse {
+  string message = 1;
+}
+
+message ErrorRequest {}
+
+message ErrorResponse {
+  int32 code = 1;
+}
+
+message EchoRequest {
+  string message = 1;
+}
+message EchoResponse {
+  string message = 1;
+}

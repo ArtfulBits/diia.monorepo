@@ -6,18 +6,31 @@
   "author": "Oleksandr Kucherenko",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "prepare": "npm run build",
+    "prebuild": "rimraf dist",
+    "build": "npm run gen:proto && npx tsc",
+    "gen:proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=outputServices=grpc-js --ts_proto_out=./src/generated -I ./protos ./protos/*.proto",
+    "start:dev": "nodemon"
   },
   "dependencies": {
-
+    "@grpc/grpc-js": "^1.6.7",
+    "@grpc/proto-loader": "^0.6.13",
+    "@grpc/reflection": "^1.0.3",
+    "debug": "^4.3.2",
+    "google-protobuf": "^3.20.1"
   },
   "devDependencies": {
-    "@diia-inhouse/configs": "^1.27.1"
+    "@types/debug": "~4.1.12",
+    "@types/google-protobuf": "~3.15.12",
+    "@types/node": "^18.19.28",
+    "@types/nodemon": "~1.19.6",
+    "nodemon": "^2.0.15",
+    "rimraf": "5.0.5",
+    "ts-node": "^10.9.2",
+    "ts-proto": "^1.170.0",
+    "typescript": "^5.2.2"
   },
-  "eslintConfig": {
-    "extends": "@diia-inhouse/eslint-config"
-  },
-  "jest": {
-    "preset": "@diia-inhouse/configs/dist/jest"
+  "volta": {
+    "node": "18.20.0"
   }
 }

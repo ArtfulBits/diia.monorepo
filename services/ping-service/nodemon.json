@@ -1,0 +1,14 @@
+{
+  "verbose": true,
+  "watch": ["src/**/*.ts", "protos/**/*.proto"],
+  "ext": "ts,proto",
+  "ignore": ["src/**/*.spec.ts", "node_modules", "dist", "src/generated/**/*.ts"],
+  "execMap": {
+    "proto": "npm run gen:proto"
+  },
+  "events": {
+    "start": "npm run gen:proto"
+  },
+  "exec": "ts-node ./src/index.ts",
+  "delay": "300"
+}
