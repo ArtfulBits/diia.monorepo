@@ -8,6 +8,12 @@
 
 ## gRPC testing
 
+## SSL certificates (self-signed)
+
+```bash
+./setup-ssl.sh # uses mkcert 
+```
+
 ## Running the Docker Container Locally
 
 To build and run the Docker container for the ping service locally, follow these steps:
